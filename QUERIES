@@ -1,0 +1,107 @@
+QUERY 1: FIND THE SUM OF TOTAL ASSETS IN FDIC INSURED INSTITUTIONS
+SELECT SUM(total_assets)
+FROM bigquery-public-data.fdic_banks.institutions
+32689374259
+
+QUERY 2: THE MAXIMUM AND MINIMUM OF TOTAL DEPOSITT IN THE INSTITUTIONS
+SELECT MAX(	total_deposits) 
+FROM bigquery-public-data.fdic_banks.institutions
+1650488000
+
+SELECT MIN(	total_deposits) 
+FROM bigquery-public-data.fdic_banks.institutions
+0
+
+QUERY 3: TO OBTAIN FDIC CETIFICATE NUMBER, INSTITUTION NAME AND ADDRESS FROM THE TABLE
+SELECT DISTINCT fdic_certificate_number,
+	institution_name,
+    address
+FROM bigquery-public-data.fdic_banks.institutions
+
+QUERY 4: fIND THE DATA FROM INDIANA STATE- USE OF 'IN'
+SELECT *
+FROM 
+bigquery-public-data.fdic_banks.institutions
+WHERE state_name IN('Indiana')
+
+QUERY 5:TO ORDER THE FDIC INSURED FARMERS AND MERCHANTS BANK ACCORDING TO THE TOTAL ASSETS AND TO KNOW THEIR STATE NAMES
+SELECT
+institution_name,
+state_name,
+total_assets
+ FROM `bigquery-public-data.fdic_banks.institutions`
+WHERE 
+institution_name='Farmers and Merchants Bank'
+order by 
+total_assets
+ LIMIT 10
+ 
+QUERY 6: TO FIND THE FDIC ID, STATE NAME AND ESTABLISHED DATE BETWEEN 2000-01-01 AND 2006-01-01 WITH A LIMIT OF 15
+SELECT fdic_id,
+state_name,
+established_date
+FROM bigquery-public-data.fdic_banks.institutions
+WHERE established_date
+BETWEEN ("2000-01-01") AND ("2006-01-01")
+Limit 15
+ 
+QUERY 7:TO JOIN THE FDIC LOCATION AND INSTITUTION TABLE TO OBTAIN DATE AND INSTITUTION NAME FROM LOCATION AND FDIC ID FROM INSTITUITION TABLE 
+SELECT 
+loc.date_established,
+loc.institution_name,
+inst.fdic_id
+FROM 
+`bigquery-public-data.fdic_banks.locations` loc
+RIGHT JOIN 
+`bigquery-public-data.fdic_banks.institutions` inst
+ON
+(loc.fdic_certificate_number=inst.fdic_certificate_number)
+limit 10
+
+QUERY 8:USING JOIN FUNCTION AND OBTAINING THE FIRST 10 INSTITUTION NAMES STARTING WITH A
+SELECT 
+loc.date_established,
+loc.institution_name,
+inst.fdic_id
+FROM 
+`bigquery-public-data.fdic_banks.locations` loc
+RIGHT JOIN 
+`bigquery-public-data.fdic_banks.institutions` inst
+ON
+(loc.fdic_certificate_number=inst.fdic_certificate_number)
+WHERE 
+loc.institution_name like 'A%'
+LIMIT 10
+
+QUERY 9:USING LEFT JOIN AND LIKE FUNCTION TO FIND ANY VALUE THAT STARTS WITH W AND ARE ATLEASR 2 CHARACTERS IN LENGTH
+SELECT 
+loc.date_established,
+loc.institution_name,
+inst.fdic_id
+FROM 
+`bigquery-public-data.fdic_banks.locations` loc
+LEFT JOIN 
+`bigquery-public-data.fdic_banks.institutions` inst
+ON
+(loc.fdic_certificate_number=inst.fdic_certificate_number)
+WHERE 
+loc.institution_name like 'W__%'
+ORDER BY 
+loc.date_established
+limit 10
+
+QUERY 10:COUNTING 
+SELECT
+  COUNT(DISTINCT(fdic_certificate_number)) 
+  AS
+  count_banks,
+  city,
+  state_name
+FROM
+  `bigquery-public-data.fdic_banks.institutions` 
+GROUP BY
+  city,
+  state_name
+ORDER BY
+  count_banks desc
+  limit 10
